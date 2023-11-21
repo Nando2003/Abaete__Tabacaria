@@ -1,6 +1,7 @@
 package com.tabacaria.tabacaria.resources;
 
 import com.tabacaria.tabacaria.entities.Categoria;
+import com.tabacaria.tabacaria.entities.Cliente;
 import com.tabacaria.tabacaria.entities.Endereco;
 import com.tabacaria.tabacaria.services.CategoriaService;
 import com.tabacaria.tabacaria.services.EnderecoService;
@@ -41,5 +42,11 @@ public class EnderecoResource {
     @DeleteMapping("/{id}")
     public void deleteEndereco(@PathVariable Long id){
         service.deleteEndereco(id);
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<Endereco> update(@PathVariable Long id, @RequestBody Endereco obj){
+        obj = service.update(id,obj);
+        return ResponseEntity.ok().body(obj);
     }
 }

@@ -27,7 +27,7 @@ public class ProdutoResource {
 
     @PostMapping
     public Produto salvarCategoria(@RequestBody Produto categoria) {
-        return service.salvarCategoria(categoria);
+        return service.salvarProduto(categoria);
     }
 
     @GetMapping(value = "/{id}")

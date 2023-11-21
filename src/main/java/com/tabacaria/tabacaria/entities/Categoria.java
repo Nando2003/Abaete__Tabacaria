@@ -62,4 +62,11 @@ public class Categoria implements Serializable {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    public String toString() {
+        return "Categoria{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

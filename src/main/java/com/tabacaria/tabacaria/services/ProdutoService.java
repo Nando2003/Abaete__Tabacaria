@@ -17,7 +17,7 @@ public class ProdutoService {
         return  repository.findAll();
     }
 
-    public Produto salvarCategoria(Produto categoria) {
+    public Produto salvarProduto(Produto categoria) {
         return repository.save(categoria);
     }
 
