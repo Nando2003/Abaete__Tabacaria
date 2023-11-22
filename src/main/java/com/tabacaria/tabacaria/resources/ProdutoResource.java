@@ -1,5 +1,6 @@
 package com.tabacaria.tabacaria.resources;
 
+import com.tabacaria.tabacaria.entities.Cliente;
 import com.tabacaria.tabacaria.entities.Produto;
 import com.tabacaria.tabacaria.services.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,5 +40,11 @@ public class ProdutoResource {
     @DeleteMapping("/{id}")
     public void deleteProduto(@PathVariable Long id){
         service.deleteProduto(id);
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<Produto> update(@PathVariable Long id, @RequestBody Produto obj){
+        obj = service.update(id,obj);
+        return ResponseEntity.ok().body(obj);
     }
 }

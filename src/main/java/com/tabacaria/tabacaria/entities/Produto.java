@@ -101,4 +101,14 @@ public class Produto implements Serializable {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    public String toString() {
+        return "Produto{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", price='" + price + '\'' +
+                ", stock='" + stock + '\'' +
+                ", Categoria='" + categoria + '\'' +
+                '}';
+    }
 }

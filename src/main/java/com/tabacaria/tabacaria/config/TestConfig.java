@@ -86,10 +86,10 @@ public class TestConfig implements CommandLineRunner {
                     enderecos_interface();
                     break;
                 case 3:
-                    produtos_interface();
+                    //produtos_interface();
                     break;
                 case 4:
-                    //produtos_interface();
+                    produtos_interface();
                     break;
                 case 5:
                     categorias_interface();
@@ -244,13 +244,13 @@ public class TestConfig implements CommandLineRunner {
                     adicionarProduto();
                     break;
                 case 2:
-                    listarCategorias();
+                    listarProdutos();
                     break;
                 case 3:
-                    atualizarCategoria();
+                    atualizarProduto();
                     break;
                 case 4:
-                    deletarCategoria();
+                    deletarProduto();
                     break;
                 case 0:
                     System.out.println("Voltando ao menu principal.");
@@ -384,6 +384,13 @@ public class TestConfig implements CommandLineRunner {
         }
     }
 
+    private void listarProdutos() {
+        List<Produto> produtos = produtoService.findAll();
+        for (Produto produto : produtos) {
+            System.out.println(produtos);
+        }
+    }
+
     private void listarEnderecos() {
         List<Endereco> enderecos = enderecoService.findAll();
         for (Endereco endereco : enderecos) {
@@ -395,6 +402,21 @@ public class TestConfig implements CommandLineRunner {
         List<Cliente> clientes = clienteService.findAll();
         for (Cliente cliente : clientes) {
             System.out.println(cliente);
+        }
+    }
+
+    private void deletarProduto() {
+        System.out.print("Digite o ID da Produto a ser excluída: ");
+        Long produtoId = scanner.nextLong();
+        scanner.nextLine();
+
+        Optional<Produto> produtoOptional = produtoRepository.findById(produtoId);
+
+        if (produtoOptional.isPresent()) {
+            produtoService.deleteProduto(produtoId);
+            System.out.println("Produto excluído com sucesso!");
+        } else {
+            System.out.println("Produto não encontrado com o ID fornecido.");
         }
     }
 
@@ -501,6 +523,65 @@ public class TestConfig implements CommandLineRunner {
         }
     }
 
+
+    private void atualizarProduto() throws ParseException {
+        System.out.print("Digite o ID do Produto a ser atualizado: ");
+        Long produtoId = scanner.nextLong();
+        scanner.nextLine();
+
+        Optional<Produto> produtoOptional = produtoRepository.findById(produtoId);
+
+        if (produtoOptional.isPresent()) {
+            Produto produtoAtualizado = obterDadosAtualizadosProduto(produtoOptional.get());
+
+            produtoService.update(produtoId, produtoAtualizado);
+
+        } else {
+            System.out.println("Produto não encontrado com o ID fornecido.");
+        }
+    }
+
+    private Produto obterDadosAtualizadosProduto(Produto produtoExiste) throws ParseException {
+        System.out.println("Digite os novos dados do Produto:");
+
+        System.out.print("Novo Nome do Produto [" + produtoExiste.getName() + "]: ");
+        String novoNome = scanner.nextLine();
+
+        System.out.print("Novo Preço do Produto [" + produtoExiste.getPrice() + "]: ");
+        Double novoPreco = scanner.nextDouble();
+
+        System.out.print("Nova Quantidade em estoque [" + produtoExiste.getStock() + "]: ");
+        Integer novoEstoque = scanner.nextInt();
+
+        System.out.print("Nova Categoria [" + produtoExiste.getCategoria().getName() + " (id=" + produtoExiste.getCategoria().getId() + ")]: ");
+        Long novaCategoria = scanner.nextLong();
+
+        Optional<Categoria> categoriaOptional = categoriaRepository.findById(novaCategoria);
+
+        if (categoriaOptional.isPresent()) {
+
+            Produto produtoAtualizado = new Produto();
+            produtoAtualizado.setId(produtoExiste.getId());
+            produtoAtualizado.setName(novoNome.isEmpty() ? produtoExiste.getName() : novoNome);
+            produtoAtualizado.setPrice(novoPreco);
+            produtoAtualizado.setStock(novoEstoque);
+            produtoAtualizado.setCategoria(categoriaOptional.get());
+
+            System.out.println("Produto e Categoria atualizado com sucesso!");
+            return produtoAtualizado;
+        }
+        else{
+
+            Produto produtoAtualizado = new Produto();
+            produtoAtualizado.setId(produtoExiste.getId());
+            produtoAtualizado.setName(novoNome.isEmpty() ? produtoExiste.getName() : novoNome);
+            produtoAtualizado.setPrice(novoPreco);
+            produtoAtualizado.setStock(novoEstoque);
+
+            System.out.println("Produto atualizado com sucesso!");
+            return produtoAtualizado;
+        }
+    }
 
     private void atualizarCliente() throws ParseException {
         System.out.print("Digite o ID do Cliente a ser atualizado: ");
