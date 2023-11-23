@@ -241,8 +241,6 @@ public class TestConfig implements CommandLineRunner {
             System.out.println("-=-= PEDIDO =-=-");
             System.out.println("1. Inserir");
             System.out.println("2. Listar");
-            System.out.println("3. Atualizar");
-            System.out.println("4. Excluir");
             System.out.println("0. Voltar");
 
             System.out.print("Escolha a opção: ");
@@ -255,12 +253,6 @@ public class TestConfig implements CommandLineRunner {
                     break;
                 case 2:
                     listarPedido();
-                    break;
-                case 3:
-                    atualizarPedido();
-                    break;
-                case 4:
-                    deletarPedido();
                     break;
                 case 0:
                     System.out.println("Voltando ao menu principal.");
@@ -410,10 +402,6 @@ public class TestConfig implements CommandLineRunner {
 
     }
 
-    private void deletarPedido(){
-
-    }
-
     private void listarPedido() {
         List<Pedido> pedidos = pedidoService.findAll();
         List<PedidoProduto> pedidoProdutos = pedidoProdutoRepository.findAll();
@@ -424,10 +412,6 @@ public class TestConfig implements CommandLineRunner {
                 System.out.println();
             }
         }
-    }
-
-    private void atualizarPedido(){
-
     }
 
     private void adicionarEndereco(){
