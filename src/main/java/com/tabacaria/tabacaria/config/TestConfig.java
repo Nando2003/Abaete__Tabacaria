@@ -3,10 +3,7 @@ package com.tabacaria.tabacaria.config;
 import com.tabacaria.tabacaria.entities.*;
 import com.tabacaria.tabacaria.entities.enums.TipoPagamento;
 import com.tabacaria.tabacaria.repositories.*;
-import com.tabacaria.tabacaria.services.CategoriaService;
-import com.tabacaria.tabacaria.services.ClienteService;
-import com.tabacaria.tabacaria.services.EnderecoService;
-import com.tabacaria.tabacaria.services.ProdutoService;
+import com.tabacaria.tabacaria.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
@@ -51,6 +48,9 @@ public class TestConfig implements CommandLineRunner {
     @Autowired
     private PedidoProdutoRepository pedidoProdutoRepository;
 
+    @Autowired
+    private PedidoService pedidoService;
+
     private static Scanner scanner = new Scanner(System.in);
 
     @Override
@@ -60,8 +60,18 @@ public class TestConfig implements CommandLineRunner {
         Endereco endereco1 = new Endereco(null, "Comandante Rubens Silva", "700", "bloco 2, 301", cliente1);
         Endereco endereco2 = new Endereco(null, "Três rios", "100", "bloco 2, 301", cliente1);
 
+        Categoria categoria = new Categoria(null, "maconha");
+        Produto produto = new Produto(null, "Maconhazona", 100.0, 10, categoria);
+        Pedido pedido = new Pedido(null, "2003-03-03", TipoPagamento.PIX, cliente1);
+        PedidoProduto pedidoProduto = new PedidoProduto(pedido, produto, produto.getPrice(), 10);
+
         clienteRepository.saveAll(Arrays.asList(cliente1));
         enderecoRepository.saveAll(Arrays.asList(endereco1, endereco2));
+        categoriaRepository.save(categoria);
+        produtoRepository.save(produto);
+        pedidoRepository.save(pedido);
+        pedidoProdutoRepository.save(pedidoProduto);
+
 
         int choice;
 
@@ -86,7 +96,7 @@ public class TestConfig implements CommandLineRunner {
                     enderecos_interface();
                     break;
                 case 3:
-                    //produtos_interface();
+                    pedidos_interface();
                     break;
                 case 4:
                     produtos_interface();
@@ -224,6 +234,45 @@ public class TestConfig implements CommandLineRunner {
 
     }
 
+    public void pedidos_interface() throws ParseException {
+        int choice;
+
+        do {
+            System.out.println("-=-= PEDIDO =-=-");
+            System.out.println("1. Inserir");
+            System.out.println("2. Listar");
+            System.out.println("3. Atualizar");
+            System.out.println("4. Excluir");
+            System.out.println("0. Voltar");
+
+            System.out.print("Escolha a opção: ");
+            choice = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (choice) {
+                case 1:
+                    adicionarPedido();
+                    break;
+                case 2:
+                    listarPedido();
+                    break;
+                case 3:
+                    atualizarPedido();
+                    break;
+                case 4:
+                    deletarPedido();
+                    break;
+                case 0:
+                    System.out.println("Voltando ao menu principal.");
+                    break;
+                default:
+                    System.out.println("Opção inválida. Tente novamente.");
+            }
+
+        } while (choice != 0);
+
+    }
+
     public void produtos_interface() throws ParseException {
         int choice;
 
@@ -232,7 +281,6 @@ public class TestConfig implements CommandLineRunner {
             System.out.println("1. Inserir");
             System.out.println("2. Listar");
             System.out.println("3. Atualizar");
-            System.out.println("4. Excluir");
             System.out.println("0. Voltar");
 
             System.out.print("Escolha a opção: ");
@@ -248,9 +296,6 @@ public class TestConfig implements CommandLineRunner {
                     break;
                 case 3:
                     atualizarProduto();
-                    break;
-                case 4:
-                    deletarProduto();
                     break;
                 case 0:
                     System.out.println("Voltando ao menu principal.");
@@ -273,6 +318,115 @@ public class TestConfig implements CommandLineRunner {
 
         categoriaService.salvarCategoria(novaCategoria);
         System.out.println("Categoria adicionada com sucesso!");
+
+    }
+
+    private void adicionarPedido() throws ParseException {
+
+        TipoPagamento tipoPagamento = null;
+
+        System.out.print("Digite o ID do Cliente que fez o Pedido: ");
+        Long clienteId = scanner.nextLong();
+        scanner.nextLine();
+
+        System.out.print("Digite o ID do Produto do Pedido: ");
+        Long produtoId = scanner.nextLong();
+        scanner.nextLine();
+
+        Optional<Cliente> clienteOptional = clienteRepository.findById(clienteId);
+        Optional<Produto> produtoOptional = produtoRepository.findById(produtoId);
+
+        if (clienteOptional.isPresent() && produtoOptional.isPresent()) {
+
+            System.out.print("Quantidade do Produto: ");
+            Integer quantidade = scanner.nextInt();
+            scanner.nextLine();
+
+            System.out.print("Data do Pedido: ");
+            String data = scanner.nextLine();
+
+            Integer pagamento;
+
+            do {
+                System.out.println("-=-= Tipo do Pagamento =-=-");
+                System.out.println("1. PIX");
+                System.out.println("2. CREDITO");
+                System.out.println("3. DEBITO");
+                System.out.println("4. LINK");
+                System.out.println("5. DINHEIRO");
+
+                System.out.print("Escolha a opção: ");
+                pagamento = scanner.nextInt();
+                scanner.nextLine();
+
+                switch (pagamento) {
+                    case 1:
+                        tipoPagamento = TipoPagamento.PIX;
+                        break;
+                    case 2:
+                        tipoPagamento = TipoPagamento.CREDITO;
+                        break;
+                    case 3:
+                        tipoPagamento = TipoPagamento.DEBITO;
+                        break;
+                    case 4:
+                        tipoPagamento = TipoPagamento.LINK;
+                        break;
+                    case 5:
+                        tipoPagamento = TipoPagamento.DINHEIRO;
+                        break;
+                    default:
+                        System.out.println("Opção inválida. Tente novamente.");
+                }
+
+            } while (pagamento < 1 || pagamento > 5);
+
+                Pedido novoPedido = new Pedido();
+                novoPedido.setCliente(clienteOptional.get());
+
+                Date data_date;
+
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                data_date = dateFormat.parse(data);
+
+                novoPedido.setDate(data_date);
+                novoPedido.setTipoPagamento(tipoPagamento);
+
+                pedidoService.salvarPedido(novoPedido);
+
+                PedidoProduto novoPedidoProduto = new PedidoProduto();
+                novoPedidoProduto.setPedido(novoPedido);
+                novoPedidoProduto.setProduto(produtoOptional.get());
+                novoPedidoProduto.setQuantity(quantidade);
+                novoPedidoProduto.setPrice(produtoOptional.get().getPrice());
+
+                pedidoProdutoRepository.save(novoPedidoProduto);
+
+                System.out.println("Pedido adicionado com sucesso");
+
+        } else {
+            System.out.println("Cliente ou Produto não existem");
+        }
+
+    }
+
+    private void deletarPedido(){
+
+    }
+
+    private void listarPedido() {
+        List<Pedido> pedidos = pedidoService.findAll();
+        List<PedidoProduto> pedidoProdutos = pedidoProdutoRepository.findAll();
+        for (Pedido pedido : pedidos) {
+            System.out.println(pedido);
+            for (PedidoProduto pedidoProduto : pedidoProdutos) {
+                System.out.print(pedidoProduto);
+                System.out.println();
+            }
+        }
+    }
+
+    private void atualizarPedido(){
 
     }
 
@@ -380,14 +534,14 @@ public class TestConfig implements CommandLineRunner {
     private void listarCategorias() {
         List<Categoria> categorias = categoriaService.findAll();
         for (Categoria categoria : categorias) {
-            System.out.println(categorias);
+            System.out.println(categoria);
         }
     }
 
     private void listarProdutos() {
         List<Produto> produtos = produtoService.findAll();
         for (Produto produto : produtos) {
-            System.out.println(produtos);
+            System.out.println(produto);
         }
     }
 

@@ -81,4 +81,11 @@ public class PedidoProduto implements Serializable {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    public String toString() {
+        return "Itens{" +
+                "price='" + price + '\'' +
+                ", quantity='" + quantity + '\'' +
+                '}';
+    }
 }

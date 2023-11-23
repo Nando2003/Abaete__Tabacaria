@@ -7,7 +7,10 @@ import jakarta.persistence.*;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -21,8 +24,8 @@ public class Pedido implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "America/Sao_Paulo")
-    private Instant date;
+    @Temporal(TemporalType.DATE)
+    private Date date;
 
     private Integer tipoPagamento;
 
@@ -40,9 +43,12 @@ public class Pedido implements Serializable {
         return id;
     }
 
-    public Pedido(Long id, Instant date, TipoPagamento tipoPagamento, Cliente cliente) {
+    public Pedido(Long id, String date_s, TipoPagamento tipoPagamento, Cliente cliente) throws ParseException {
         this.id = id;
-        this.date = date;
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        this.date = dateFormat.parse(date_s);
+
         setTipoPagamento(tipoPagamento);
         this.cliente = cliente;
     }
@@ -51,11 +57,11 @@ public class Pedido implements Serializable {
         this.id = id;
     }
 
-    public Instant getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(Instant date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -100,6 +106,16 @@ public class Pedido implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public String toString() {
+
+        return "Pedido{" +
+                "id=" + id +
+                ", date='" + date + '\'' +
+                ", TipoPagamento='" + tipoPagamento + '\'' +
+                ", Cliente ='" + cliente + '\'' +
+                '}';
     }
 
 }
