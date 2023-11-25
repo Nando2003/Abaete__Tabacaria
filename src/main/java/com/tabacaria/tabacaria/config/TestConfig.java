@@ -56,23 +56,6 @@ public class TestConfig implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        Cliente cliente1 = new Cliente(null, "Fernando", "Fontes", "123", "123", "2003-03-03");
-        Endereco endereco1 = new Endereco(null, "Comandante Rubens Silva", "700", "bloco 2, 301", cliente1);
-        Endereco endereco2 = new Endereco(null, "Três rios", "100", "bloco 2, 301", cliente1);
-
-        Categoria categoria = new Categoria(null, "maconha");
-        Produto produto = new Produto(null, "Maconhazona", 100.0, 10, categoria);
-        Pedido pedido = new Pedido(null, "2003-03-03", TipoPagamento.PIX, cliente1);
-        PedidoProduto pedidoProduto = new PedidoProduto(pedido, produto, produto.getPrice(), 10);
-
-        clienteRepository.saveAll(Arrays.asList(cliente1));
-        enderecoRepository.saveAll(Arrays.asList(endereco1, endereco2));
-        categoriaRepository.save(categoria);
-        produtoRepository.save(produto);
-        pedidoRepository.save(pedido);
-        pedidoProdutoRepository.save(pedidoProduto);
-
-
         int choice;
 
         do {
