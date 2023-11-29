@@ -17,5 +17,5 @@ Criar um sistema de gestão de estoque em Java que permita o registro de produto
 - Atualização automática do estoque com base nas transações.
 - Participação dos Públicos: Os proprietários da tabacaria serão envolvidos na definição dos requisitos e na avaliação da usabilidade do sistema.
 
-
+# UML do Sistema
 <img src="/UML_TABACARIA.png">
